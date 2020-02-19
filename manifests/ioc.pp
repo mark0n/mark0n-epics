@@ -2,7 +2,7 @@
 # automatically populates them with the correct values and installs the
 # registers the service.
 #
-define epics_softioc::ioc(
+define epics::ioc(
   Optional[Enum['running', 'stopped']]   $ensure                      = undef,
   Optional[Boolean]                      $enable                      = undef,
   Boolean                                $manage_autosave_dir         = false,
@@ -30,7 +30,7 @@ define epics_softioc::ioc(
   Boolean                                $run_make                    = true,
   Boolean                                $run_make_after_pkg_update   = true,
   Optional[Integer]                      $uid                         = undef,
-  String                                 $abstopdir                   = "${epics_softioc::iocbase}/${name}",
+  String                                 $abstopdir                   = "${epics::iocbase}/${name}",
   String                                 $username                    = "softioc-${name}",
   Boolean                                $manage_user                 = true,
   Array[String]                          $systemd_after               = [ 'network.target' ],
@@ -38,7 +38,7 @@ define epics_softioc::ioc(
   Array[String]                          $systemd_requires_mounts_for = [],
 )
 {
-  $iocbase = $epics_softioc::iocbase
+  $iocbase = $epics::iocbase
 
   if($bootdir) {
     $absbootdir = "${abstopdir}/${bootdir}"
@@ -89,11 +89,11 @@ define epics_softioc::ioc(
   }
 
   if $enable_console_port {
-    include epics_softioc::telnet
+    include epics::telnet
   }
 
   if $enable_unix_domain_socket {
-    include epics_softioc::unix_domain_socket
+    include epics::unix_domain_socket
   }
 
   if $run_make {
@@ -102,7 +102,7 @@ define epics_softioc::ioc(
       cwd       => $abstopdir,
       umask     => '002',
       unless    => '/usr/bin/make CHECK_RELEASE=NO CHECK_RELEASE_NO= --question',
-      require   => Class['epics_softioc::software'],
+      require   => Class['epics::software'],
       subscribe => Package['epics-dev'],
     }
   }
@@ -138,7 +138,7 @@ define epics_softioc::ioc(
     file { "/etc/iocs/${name}":
       ensure  => directory,
       group   => 'softioc',
-      require => Class['::epics_softioc'],
+      require => Class['::epics'],
     }
 
     file { "/etc/iocs/${name}/config":
@@ -150,7 +150,7 @@ define epics_softioc::ioc(
     exec { "create init script for softioc ${name}":
       command => "/usr/bin/manage-iocs install ${name}",
       require => [
-        Class['epics_softioc'],
+        Class['epics'],
         File["/etc/iocs/${name}/config"],
         File[$iocbase],
       ],
@@ -185,7 +185,7 @@ define epics_softioc::ioc(
       hasstatus  => true,
       provider   => 'systemd',
       require    => [
-        Class['epics_softioc::software'],
+        Class['epics::software'],
         Package['procserv'],
         Class['systemd::systemctl::daemon_reload'],
         File["/var/log/softioc-${name}"],
@@ -198,7 +198,7 @@ define epics_softioc::ioc(
       hasrestart => true,
       hasstatus  => true,
       require    => [
-        Class['epics_softioc::software'],
+        Class['epics::software'],
         Package['procserv'],
         Class['systemd::systemctl::daemon_reload'],
         File["/var/log/softioc-${name}"],

@@ -7,7 +7,7 @@ module relies on sysv-rc-softioc for creating System V init scripts instead.
 
 # Environment Variables
 
-Some attributes of the `Epics_softioc::Ioc` class cause environment variables to
+Some attributes of the `Epics::Ioc` class cause environment variables to
 be set. Please refer to the following table for a list:
 
 | Attribute            | Environment Variable       |
@@ -29,11 +29,11 @@ attribute.
 ```
   $iocbase = '/usr/local/lib/iocapps'
 
-  class { 'epics_softioc':
+  class { 'epics':
     iocbase => $iocbase,
   }
 
-  epics_softioc::ioc { 'mysoftioc':
+  epics::ioc { 'mysoftioc':
     ensure  => running,
     enable  => true,
     bootdir => 'iocBoot/ioclinux-x86_64',
@@ -48,7 +48,7 @@ In this example we run two IOC processes on the same machine. Thus different
 facility-wide defaults.
 
 ```
-Epics_softioc::Ioc {
+Epics::Ioc {
   log_port            => 6500,
   log_server          => 'logserver.example.com',
   manage_autosave_dir => true,
@@ -56,11 +56,11 @@ Epics_softioc::Ioc {
 
 $iocbase = '/usr/local/lib/iocapps'
 
-class { 'epics_softioc':
+class { 'epics':
   iocbase => $iocbase,
 }
 
-epics_softioc::ioc { 'vacuum':
+epics::ioc { 'vacuum':
   ensure            => running,
   enable            => true,
   bootdir           => 'iocBoot/ioclinux-x86_64',
@@ -76,7 +76,7 @@ epics_softioc::ioc { 'vacuum':
   require           => File["${iocbase}/vacuum"],
 }
 
-epics_softioc::ioc { 'llrf':
+epics::ioc { 'llrf':
   ensure       => running,
   enable       => true,
   bootdir      => 'iocBoot/ioclinux-x86_64',
@@ -88,7 +88,7 @@ epics_softioc::ioc { 'llrf':
 
 # Reference
 
-## Class `epics_softioc`
+## Class `epics`
 
 This class takes care of all global tasks which are needed in order to run a
 soft IOC. It installs the needed packages and prepares machine-global
@@ -106,13 +106,13 @@ By default the IOC directories are expected to be all in one location. This
 option specifies the path to this base directory. Default:
 `/usr/local/lib/iocapps`.
 
-## Defined Type `epics_softioc::ioc`
+## Defined Type `epics::ioc`
 
 This type configures an EPICS soft IOC. It creates configuration files,
 automatically populates them with the correct values and configures the IOC for
 running it as a system service. The top-level IOC directory of the IOC is
 expected to be `$iocbase/<ioc_name>` where <ioc_name> is the name specified for
-the `epics_softioc::ioc` resource.
+the `epics::ioc` resource.
 
 ### `abstopdir`
 
@@ -282,7 +282,7 @@ Note that the unix domain socket will not be created if
 
 Facility-wide IOC profile:
 ```
-  class { 'epics_softioc':
+  class { 'epics':
     iocbase => '/usr/local/lib/iocapps',
   }
 
@@ -294,11 +294,11 @@ Facility-wide IOC profile:
 
 Machine-specific manifest:
 ```
-  epics_softioc::ioc { 'mysoftioc1':
+  epics::ioc { 'mysoftioc1':
     ...
   }
 
-  epics_softioc::ioc { 'mysoftioc2':
+  epics::ioc { 'mysoftioc2':
     ...
     run_make_after_pkg_update => false,
   }

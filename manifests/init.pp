@@ -2,11 +2,11 @@
 # soft IOC. It installs the needed packages and prepares machine-global
 # directories and configuration files.
 #
-class epics_softioc(
+class epics(
   Optional[Integer]  $gid     = undef,
   String[1, default] $iocbase = '/usr/local/lib/iocapps',
 ) {
-  include epics_softioc::software
+  include epics::software
 
   group { 'softioc':
     ensure => present,
