@@ -1,0 +1,53 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          caRepeater
+# Required-Start:    $network
+# Required-Stop:     $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start EPICS Channel Access Repeater
+# Description:       Start EPICS Channel Access Repeater
+### END INIT INFO
+
+set -e
+
+DESC='EPICS Channel Access Repeater'
+PIDFILE=/var/run/caRepeater.pid
+EXECUTABLE=/usr/bin/caRepeater
+EPICS_CA_REPEATER_PORT=5065
+USER=nobody
+
+[ -r /etc/caRepeater.conf ] && . /etc/caRepeater.conf
+
+test -x $EXECUTABLE || exit 0
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting ${DESC}" 'caRepeater'
+    export EPICS_CA_REPEATER_PORT
+    /sbin/start-stop-daemon --start --pidfile "$PIDFILE" --exec "$EXECUTABLE" \
+                            --background --make-pidfile --oknodo --chuid=$USER
+    log_end_msg $?
+    ;;
+  stop)
+    log_daemon_msg "Stopping ${DESC}" 'caRepeater'
+    killproc -p $PIDFILE "$EXECUTABLE"
+    RETVAL=$?
+    [ $RETVAL -eq 0 ] && [ -e "$PIDFILE" ] && rm -f "$PIDFILE"
+    log_end_msg $RETVAL
+    ;;
+  restart)
+    log_daemon_msg "Restarting ${DESC}" 'caRepeater'
+    $0 stop
+    $0 start
+    ;;
+  status)
+    status_of_proc -p "$PIDFILE" "$EXECUTABLE" caRepeater && exit 0 || exit $?
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
+    ;;
+esac

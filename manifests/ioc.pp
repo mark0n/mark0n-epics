@@ -36,6 +36,7 @@ define epics::ioc(
   Array[String]                        $systemd_after               = lookup('epics::ioc::systemd_after', Array[String]),
   Array[String]                        $systemd_requires            = lookup('epics::ioc::systemd_requires', Array[String]),
   Array[String]                        $systemd_requires_mounts_for = lookup('epics::ioc::systemd_requires_mounts_for', Array[String]),
+  Array[String]                        $systemd_wants               = lookup('epics::ioc::systemd_wants', Array[String]),
 )
 {
   $iocbase = $epics::iocbase
@@ -127,35 +128,49 @@ define epics::ioc(
     }
   }
 
-  if $::service_provider == 'systemd' {
-    $absstartscript = "${absbootdir}/${startscript}"
-
-    systemd::unit_file { "softioc-${name}.service":
-      content => template("${module_name}/etc/systemd/system/ioc.service"),
-      notify  => Service["softioc-${name}"],
-    }
+  if defined(Class[epics::carepeater]) {
+    $real_systemd_after = $systemd_after << 'caRepeater.service'
+    $real_systemd_wants = $systemd_wants << 'caRepeater.service'
   } else {
-    file { "/etc/iocs/${name}":
-      ensure  => directory,
-      group   => 'softioc',
-      require => Class['::epics'],
-    }
+    $real_systemd_after = $systemd_after
+    $real_systemd_wants = $systemd_wants
+  }
 
-    file { "/etc/iocs/${name}/config":
-      ensure  => present,
-      content => template("${module_name}/etc/iocs/ioc_config"),
-      notify  => Service["softioc-${name}"],
-    }
+  case $::service_provider {
+    'systemd': {
+      $absstartscript = "${absbootdir}/${startscript}"
 
-    exec { "create init script for softioc ${name}":
-      command => "/usr/bin/manage-iocs install ${name}",
-      require => [
-        Class['epics'],
-        File["/etc/iocs/${name}/config"],
-        File[$iocbase],
-      ],
-      creates => "/etc/init.d/softioc-${name}",
-      before  => Service["softioc-${name}"],
+      systemd::unit_file { "softioc-${name}.service":
+        content => template("${module_name}/etc/systemd/system/ioc.service"),
+        notify  => Service["softioc-${name}"],
+      }
+    }
+    'init', 'debian': {
+      file { "/etc/iocs/${name}":
+        ensure  => directory,
+        group   => 'softioc',
+        require => Class['::epics'],
+      }
+
+      file { "/etc/iocs/${name}/config":
+        ensure  => present,
+        content => template("${module_name}/etc/iocs/ioc_config"),
+        notify  => Service["softioc-${name}"],
+      }
+
+      exec { "create init script for softioc ${name}":
+        command => "/usr/bin/manage-iocs install ${name}",
+        require => [
+          Class['epics'],
+          File["/etc/iocs/${name}/config"],
+          File[$iocbase],
+        ],
+        creates => "/etc/init.d/softioc-${name}",
+        before  => Service["softioc-${name}"],
+      }
+    }
+    default: {
+      fail("${module_name}: Service provider ${::service_provider} is not supported, yet. Pull-requests welcome ;-)")
     }
   }
 
@@ -183,6 +198,7 @@ define epics::ioc(
     hasrestart => true,
     hasstatus  => true,
     provider   => $::service_provider,
+    tag        => 'epics_ioc_service',
     require    => [
       Class['epics::software'],
       Package['procserv'],

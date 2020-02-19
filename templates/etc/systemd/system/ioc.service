@@ -1,7 +1,8 @@
 [Unit]
 Description=EPICS Soft IOC <%= @name %>
 Requires=<%= @systemd_requires.join(' ') %>
-After=<%= @systemd_after.join(' ') %>
+Wants=<%= @real_systemd_wants.join(' ') %>
+After=<%= @real_systemd_after.join(' ') %>
 RequiresMountsFor=<%= @systemd_requires_mounts_for.join(' ') %>
 
 [Service]

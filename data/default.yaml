@@ -3,6 +3,13 @@ lookup_options:
   epics::ioc::env_vars:
     merge: hash
 
+epics::carepeater::ensure: running
+epics::carepeater::enable: true
+epics::carepeater::executable: /usr/bin/caRepeater
+epics::carepeater::port: 5065
+epics::carepeater::unit_file_ensure: present
+epics::carepeater::user: nobody
+epics::catools::ensure: latest
 epics::ioc::manage_autosave_dir: false
 epics::ioc::auto_restart_ioc: true
 epics::ioc::autosave_base_dir: /var/lib
@@ -25,6 +32,7 @@ epics::ioc::systemd_after:
   - network.target
 epics::ioc::systemd_requires:
   - network.target
+epics::ioc::systemd_wants: []
 epics::ioc::systemd_requires_mounts_for: []
 epics::iocbase: /usr/local/lib/iocapps
 epics::software::ensure_build_essential: latest
