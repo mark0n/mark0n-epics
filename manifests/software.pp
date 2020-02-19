@@ -1,16 +1,20 @@
 # This class installs software which are needed in order to build and run a
 # soft IOC.
 #
-class epics::software() {
+class epics::software(
+  String $ensure_build_essential,
+  String $ensure_epics_dev,
+  String $ensure_procserv,
+) {
   package { 'build-essential':
-    ensure => lookup('epics::software::ensure_build-essential', String, 'first', 'latest'),
+    ensure => $ensure_build_essential,
   }
 
   package { 'epics-dev':
-    ensure => lookup('epics::software::ensure_epics-dev', String, 'first', 'latest'),
+    ensure => $ensure_epics_dev,
   }
 
   package { 'procserv':
-    ensure => lookup('epics::software::ensure_procserv', String, 'first', 'latest'),
+    ensure => $ensure_procserv,
   }
 }

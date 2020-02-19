@@ -4,7 +4,7 @@
 #
 class epics(
   Optional[Integer]  $gid     = undef,
-  String[1, default] $iocbase = '/usr/local/lib/iocapps',
+  String[1, default] $iocbase,
 ) {
   include epics::software
 

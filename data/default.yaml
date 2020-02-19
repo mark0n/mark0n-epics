@@ -1,0 +1,32 @@
+---
+lookup_options:
+  epics::ioc::env_vars:
+    merge: hash
+
+epics::ioc::manage_autosave_dir: false
+epics::ioc::auto_restart_ioc: true
+epics::ioc::autosave_base_dir: /var/lib
+epics::ioc::bootdir: iocBoot/ioc${HOST_ARCH}
+epics::ioc::startscript: st.cmd
+epics::ioc::enable_console_port: true
+epics::ioc::console_port: 4051
+epics::ioc::enable_unix_domain_socket: true
+epics::ioc::coresize: 10000000
+epics::ioc::cfg_append: []
+epics::ioc::env_vars: {}
+epics::ioc::log_port: 7004
+epics::ioc::logrotate_compress: true
+epics::ioc::logrotate_rotate: 30
+epics::ioc::logrotate_size: 10M
+epics::ioc::run_make: true
+epics::ioc::run_make_after_pkg_update: true
+epics::ioc::manage_user: true
+epics::ioc::systemd_after:
+  - network.target
+epics::ioc::systemd_requires:
+  - network.target
+epics::ioc::systemd_requires_mounts_for: []
+epics::iocbase: /usr/local/lib/iocapps
+epics::software::ensure_build_essential: latest
+epics::software::ensure_epics_dev: latest
+epics::software::ensure_procserv: latest
