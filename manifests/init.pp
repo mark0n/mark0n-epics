@@ -3,8 +3,8 @@
 # directories and configuration files.
 #
 class epics(
-  Optional[Integer]  $gid     = undef,
-  String[1, default] $iocbase,
+  Optional[Integer]    $gid     = undef,
+  Stdlib::Absolutepath $iocbase,
 ) {
   include epics::software
 

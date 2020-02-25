@@ -9,6 +9,10 @@
   "issues_url": "https://github.com/frib-high-level-controls/mark0n-epics/issues",
   "dependencies": [
     {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">=4.25.0"
+    },
+    {
       "name": "puppet-logrotate",
       "version_requirement": ">= 3.0.0 < 4.0.0"
     },
