@@ -13,7 +13,7 @@ class epics(
     gid    => $gid,
   }
 
-  if $::initsystem != 'systemd' {
+  if $::service_provider != 'systemd' {
     package { 'sysv-rc-softioc':
       ensure => installed,
     }

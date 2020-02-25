@@ -127,7 +127,7 @@ define epics::ioc(
     }
   }
 
-  if $::initsystem == 'systemd' {
+  if $::service_provider == 'systemd' {
     $absstartscript = "${absbootdir}/${startscript}"
 
     systemd::unit_file { "softioc-${name}.service":
@@ -177,33 +177,18 @@ define epics::ioc(
     compress     => $logrotate_compress,
   }
 
-  if $::initsystem == 'systemd' {
-    service { "softioc-${name}":
-      ensure     => $ensure,
-      enable     => $enable,
-      hasrestart => true,
-      hasstatus  => true,
-      provider   => 'systemd',
-      require    => [
-        Class['epics::software'],
-        Package['procserv'],
-        Class['systemd::systemctl::daemon_reload'],
-        File["/var/log/softioc-${name}"],
-      ],
-    }
-  } else {
-    service { "softioc-${name}":
-      ensure     => $ensure,
-      enable     => $enable,
-      hasrestart => true,
-      hasstatus  => true,
-      require    => [
-        Class['epics::software'],
-        Package['procserv'],
-        Class['systemd::systemctl::daemon_reload'],
-        File["/var/log/softioc-${name}"],
-      ],
-    }
+  service { "softioc-${name}":
+    ensure     => $ensure,
+    enable     => $enable,
+    hasrestart => true,
+    hasstatus  => true,
+    provider   => $::service_provider,
+    require    => [
+      Class['epics::software'],
+      Package['procserv'],
+      Class['systemd::systemctl::daemon_reload'],
+      File["/var/log/softioc-${name}"],
+    ],
   }
 
   if $run_make and $run_make_after_pkg_update {
