@@ -21,7 +21,7 @@ define epics::ioc(
   Array[String]                        $cfg_append                  = lookup('epics::ioc::cfg_append', Array[String]),
   Hash[String, Data, default, default] $env_vars                    = lookup('epics::ioc::env_vars', Hash[String, Data, default, default]),
   Stdlib::Port                         $log_port                    = lookup('epics::ioc::log_port', Stdlib::Port),
-  Optional[Stdlib::Host]               $log_server                  = lookup('epics::ioc::log_server', { 'value_type' => Stdlib::Host, 'default_value' => undef }),
+  Optional[Stdlib::Host]               $log_server                  = lookup('epics::ioc::log_server', { 'value_type' => Optional[Stdlib::Host], 'default_value' => undef }),
   Optional[String]                     $ca_sec_file                 = undef,
   Stdlib::Absolutepath                 $procserv_log_file           = "/var/log/softioc-${name}/procServ.log",
   Boolean                              $logrotate_compress          = lookup('epics::ioc::logrotate_compress', Boolean),
