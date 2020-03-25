@@ -39,6 +39,8 @@ define epics::ioc(
   Array[String]                        $systemd_wants               = lookup('epics::ioc::systemd_wants', Array[String]),
 )
 {
+  Class['epics'] -> Epics::Ioc[$name]
+
   $iocbase = $epics::iocbase
 
   if($bootdir) {

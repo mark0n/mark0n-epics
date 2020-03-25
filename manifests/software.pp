@@ -17,4 +17,10 @@ class epics::software(
   package { 'procserv':
     ensure => $ensure_procserv,
   }
+
+  if $::service_provider == 'init' or $::service_provider == 'debian' {
+    package { 'sysv-rc-softioc':
+      ensure => installed,
+    }
+  }
 }

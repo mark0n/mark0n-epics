@@ -14,16 +14,11 @@ class epics(
   }
 
   if $::service_provider == 'init' or $::service_provider == 'debian' {
-    package { 'sysv-rc-softioc':
-      ensure => installed,
-    }
-
     file { '/etc/default/epics-softioc':
       content => template("${module_name}/etc/default/epics-softioc"),
       owner   => root,
       group   => root,
       mode    => '0644',
-      require => Package['sysv-rc-softioc'],
     }
   }
 
