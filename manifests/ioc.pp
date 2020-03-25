@@ -192,6 +192,16 @@ define epics::ioc(
     compress     => $logrotate_compress,
   }
 
+  $service_require = [
+    Class['epics::software'],
+    Package['procserv'],
+    File["/var/log/softioc-${name}"],
+  ]
+  $service_require_systemd = $::service_provider ? {
+    'systemd' => [Class['systemd::systemctl::daemon_reload']],
+    default   => [],
+  }
+
   service { "softioc-${name}":
     ensure     => $ensure,
     enable     => $enable,
@@ -199,12 +209,7 @@ define epics::ioc(
     hasstatus  => true,
     provider   => $::service_provider,
     tag        => 'epics_ioc_service',
-    require    => [
-      Class['epics::software'],
-      Package['procserv'],
-      Class['systemd::systemctl::daemon_reload'],
-      File["/var/log/softioc-${name}"],
-    ],
+    require    => $service_require + $service_require_systemd,
   }
 
   if $run_make and $run_make_after_pkg_update {
