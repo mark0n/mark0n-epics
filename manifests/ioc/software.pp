@@ -1,7 +1,8 @@
-# This class installs software which are needed in order to build and run a
-# soft IOC.
+# This class installs software needed to build and run an EPICS IOC. If IOCs
+# are managed by epics::ioc this class is instantiated automatically. You might
+# want to include this class directly if your IOCs are managed by other means.
 #
-class epics::software(
+class epics::ioc::software(
   String $ensure_build_essential,
   String $ensure_epics_dev,
   String $ensure_procserv,

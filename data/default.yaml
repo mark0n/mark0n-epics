@@ -35,6 +35,6 @@ epics::ioc::systemd_requires:
 epics::ioc::systemd_wants: []
 epics::ioc::systemd_requires_mounts_for: []
 epics::iocbase: /usr/local/lib/iocapps
-epics::software::ensure_build_essential: latest
-epics::software::ensure_epics_dev: latest
-epics::software::ensure_procserv: latest
+epics::ioc::software::ensure_build_essential: latest
+epics::ioc::software::ensure_epics_dev: latest
+epics::ioc::software::ensure_procserv: latest

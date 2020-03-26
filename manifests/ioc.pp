@@ -41,6 +41,8 @@ define epics::ioc(
 {
   Class['epics'] -> Epics::Ioc[$name]
 
+  include "::${module_name}::ioc::software"
+
   $iocbase = $epics::iocbase
 
   if($bootdir) {
@@ -105,7 +107,7 @@ define epics::ioc(
       cwd       => $abstopdir,
       umask     => '002',
       unless    => '/usr/bin/make CHECK_RELEASE=NO CHECK_RELEASE_NO= --question',
-      require   => Class['epics::software'],
+      require   => Class['epics::ioc::software'],
       subscribe => Package['epics-dev'],
     }
   }
@@ -195,7 +197,7 @@ define epics::ioc(
   }
 
   $service_require = [
-    Class['epics::software'],
+    Class['epics::ioc::software'],
     Package['procserv'],
     File["/var/log/softioc-${name}"],
   ]

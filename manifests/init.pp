@@ -6,8 +6,6 @@ class epics(
   Optional[Integer]    $gid     = undef,
   Stdlib::Absolutepath $iocbase,
 ) {
-  include epics::software
-
   group { 'softioc':
     ensure => present,
     gid    => $gid,
