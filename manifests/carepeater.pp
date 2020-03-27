@@ -64,6 +64,4 @@ class epics::carepeater(
     hasrestart => true,
     require    => Class['::epics::catools'],
   }
-
-  Service['caRepeater'] -> Service <| tag == 'epics_ioc_service' |>
 }

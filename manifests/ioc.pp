@@ -198,6 +198,7 @@ define epics::ioc(
   }
 
   $service_require = [
+    Class["::${module_name}::carepeater"],
     Class['epics::ioc::software'],
     Package['procserv'],
     File["/var/log/softioc-${name}"],
@@ -213,7 +214,6 @@ define epics::ioc(
     hasrestart => true,
     hasstatus  => true,
     provider   => $::service_provider,
-    tag        => 'epics_ioc_service',
     require    => $service_require + $service_require_systemd,
   }
 
