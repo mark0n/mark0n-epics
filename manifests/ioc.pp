@@ -42,6 +42,7 @@ define epics::ioc(
   Class['epics'] -> Epics::Ioc[$name]
 
   include "::${module_name}::ioc::software"
+  include "::${module_name}::carepeater"
 
   $iocbase = $epics::iocbase
 
