@@ -30,7 +30,6 @@ define epics::ioc(
   Boolean                              $run_make                    = lookup('epics::ioc::run_make', Boolean),
   Boolean                              $run_make_after_pkg_update   = lookup('epics::ioc::run_make_after_pkg_update', Boolean),
   Optional[Integer]                    $uid                         = undef,
-  String                               $abstopdir                   = "${epics::iocbase}/${name}",
   String                               $username                    = lookup('epics::ioc::username', { 'default_value' => "softioc-${name}" }),
   Boolean                              $manage_user                 = lookup('epics::ioc::manage_user', Boolean),
   Array[String]                        $systemd_after               = lookup('epics::ioc::systemd_after', Array[String]),
@@ -46,6 +45,7 @@ define epics::ioc(
 
   $iocbase = $epics::iocbase
 
+  $abstopdir = "${epics::iocbase}/${name}"
   if($bootdir) {
     $absbootdir = "${abstopdir}/${bootdir}"
   } else {
