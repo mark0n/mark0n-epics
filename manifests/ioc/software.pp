@@ -6,6 +6,7 @@ class epics::ioc::software(
   String $ensure_build_essential,
   String $ensure_epics_dev,
   String $ensure_procserv,
+  String $ensure_sysv_rc_softioc,
 ) {
   package { 'build-essential':
     ensure => $ensure_build_essential,
@@ -21,7 +22,7 @@ class epics::ioc::software(
 
   if $::service_provider == 'init' or $::service_provider == 'debian' {
     package { 'sysv-rc-softioc':
-      ensure => installed,
+      ensure => $ensure_sysv_rc_softioc,
     }
   }
 }

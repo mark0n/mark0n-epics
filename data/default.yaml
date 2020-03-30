@@ -38,3 +38,4 @@ epics::iocbase: /usr/local/lib/iocapps
 epics::ioc::software::ensure_build_essential: latest
 epics::ioc::software::ensure_epics_dev: latest
 epics::ioc::software::ensure_procserv: latest
+epics::ioc::software::ensure_sysv_rc_softioc: latest
