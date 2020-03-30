@@ -10,6 +10,7 @@ epics::carepeater::port: 5065
 epics::carepeater::unit_file_ensure: present
 epics::carepeater::user: nobody
 epics::catools::ensure: latest
+epics::group: softioc
 epics::ioc::manage_autosave_dir: false
 epics::ioc::auto_restart_ioc: true
 epics::ioc::autosave_base_dir: /var/lib
@@ -34,8 +35,9 @@ epics::ioc::systemd_requires:
   - network.target
 epics::ioc::systemd_wants: []
 epics::ioc::systemd_requires_mounts_for: []
-epics::iocbase: /usr/local/lib/iocapps
 epics::ioc::software::ensure_build_essential: latest
 epics::ioc::software::ensure_epics_dev: latest
 epics::ioc::software::ensure_procserv: latest
 epics::ioc::software::ensure_sysv_rc_softioc: latest
+epics::iocbase: /usr/local/lib/iocapps
+epics::owner: root

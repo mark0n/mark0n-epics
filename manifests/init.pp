@@ -3,10 +3,12 @@
 # directories and configuration files.
 #
 class epics(
-  Optional[Integer]    $gid     = undef,
   Stdlib::Absolutepath $iocbase,
+  String               $owner,
+  String               $group,
+  Optional[Integer]    $gid     = undef,
 ) {
-  group { 'softioc':
+  group { $group:
     ensure => present,
     gid    => $gid,
   }
@@ -14,22 +16,22 @@ class epics(
   if $::service_provider == 'init' or $::service_provider == 'debian' {
     file { '/etc/default/epics-softioc':
       content => template("${module_name}/etc/default/epics-softioc"),
-      owner   => root,
-      group   => root,
+      owner   => $owner,
+      group   => $group,
       mode    => '0644',
     }
   }
 
   file { '/etc/iocs':
     ensure => directory,
-    owner  => 'root',
-    group  => 'softioc',
+    owner  => $owner,
+    group  => $group,
   }
 
   file { $iocbase:
     ensure => directory,
-    owner  => 'root',
-    group  => 'softioc',
+    owner  => $owner,
+    group  => $group,
     mode   => '2755',
   }
 }
