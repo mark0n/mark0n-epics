@@ -38,12 +38,9 @@ define epics::ioc(
   Array[String]                        $systemd_wants               = lookup('epics::ioc::systemd_wants', Array[String]),
 )
 {
-  Class['epics'] -> Epics::Ioc[$name]
-
+  require "::${module_name}"
   include "::${module_name}::ioc::software"
   include "::${module_name}::carepeater"
-
-  $iocbase = $epics::iocbase
 
   $abstopdir = "${epics::iocbase}/${name}"
   if($bootdir) {
@@ -152,9 +149,8 @@ define epics::ioc(
     }
     'init', 'debian': {
       file { "/etc/iocs/${name}":
-        ensure  => directory,
-        group   => 'softioc',
-        require => Class['::epics'],
+        ensure => directory,
+        group  => 'softioc',
       }
 
       file { "/etc/iocs/${name}/config":
@@ -165,11 +161,7 @@ define epics::ioc(
 
       exec { "create init script for softioc ${name}":
         command => "/usr/bin/manage-iocs install ${name}",
-        require => [
-          Class['epics'],
-          File["/etc/iocs/${name}/config"],
-          File[$iocbase],
-        ],
+        require => File["/etc/iocs/${name}/config"],
         creates => "/etc/init.d/softioc-${name}",
         before  => Service["softioc-${name}"],
       }
