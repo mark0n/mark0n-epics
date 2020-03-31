@@ -6,8 +6,8 @@ service_providers = ['debian', 'init', 'systemd']
 
 describe 'epics' do
   on_supported_os.each do |os, os_facts|
-    context "on #{os}" do
-      service_providers.each do |serv_prov|
+    service_providers.each do |serv_prov|
+      context "on #{os} with service provider #{serv_prov}" do
         let(:facts) do
           os_facts.merge(service_provider: serv_prov)
         end
