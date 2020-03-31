@@ -54,7 +54,7 @@ class epics::carepeater(
       }
     }
     default: {
-      fail("Module 'epics' doesn't support service provider ${::service_provider}, yet. Pull-requests welcome ;-)")
+      fail("Module '${module_name}' doesn't support service provider '${::service_provider}', yet. Pull-requests welcome ;-)")
     }
   }
 

@@ -167,7 +167,7 @@ define epics::ioc(
       }
     }
     default: {
-      fail("${module_name}: Service provider ${::service_provider} is not supported, yet. Pull-requests welcome ;-)")
+      fail("Module '${module_name}' doesn't support service provider '${::service_provider}', yet. Pull-requests welcome ;-)")
     }
   }
 
