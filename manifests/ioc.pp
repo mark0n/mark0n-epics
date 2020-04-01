@@ -146,6 +146,8 @@ define epics::ioc(
         content => template("${module_name}/etc/systemd/system/ioc.service"),
         notify  => Service["softioc-${name}"],
       }
+
+      $postrotate = "/bin/systemctl kill --signal=HUP --kill-who=main softioc-${name}.service"
     }
     'init', 'debian': {
       file { "/etc/iocs/${name}":
@@ -165,6 +167,8 @@ define epics::ioc(
         creates => "/etc/init.d/softioc-${name}",
         before  => Service["softioc-${name}"],
       }
+
+      $postrotate = "/bin/kill --signal=HUP `cat /run/softioc-${name}.pid`"
     }
     default: {
       fail("Module '${module_name}' doesn't support service provider '${::service_provider}', yet. Pull-requests welcome ;-)")
@@ -185,7 +189,7 @@ define epics::ioc(
     size         => $logrotate_size,
     missingok    => true,
     ifempty      => false,
-    postrotate   => "/bin/systemctl kill --signal=HUP --kill-who=main softioc-${name}.service",
+    postrotate   => $postrotate,
     compress     => $logrotate_compress,
   }
 
