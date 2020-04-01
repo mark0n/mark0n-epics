@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'epics::ioc' do
-  let(:title) { 'namevar' }
+  let(:title) { 'testioc' }
   let(:params) do
     {}
   end
@@ -15,8 +15,6 @@ describe 'epics::ioc' do
           let(:facts) do
             os_facts.merge(service_provider: serv_prov)
           end
-
-          let(:title) { 'testioc' }
 
           it { is_expected.to compile.with_all_deps }
 
@@ -60,6 +58,8 @@ describe 'epics::ioc' do
               umask: '002',
               unless: '/usr/bin/make CHECK_RELEASE=NO CHECK_RELEASE_NO= --question',
             )
+            is_expected.to create_exec("build IOC #{title}").that_requires('Class[epics::ioc::software]')
+            is_expected.to create_exec("build IOC #{title}").that_subscribes_to('Package[epics-dev]')
           }
 
           it {
@@ -67,6 +67,7 @@ describe 'epics::ioc' do
               groups: 'softioc',
               uid: nil,
             )
+            is_expected.to create_user("softioc-#{title}").that_comes_before("Service[softioc-#{title}]")
           }
 
           it {
@@ -83,9 +84,9 @@ describe 'epics::ioc' do
               path: "/var/log/softioc-#{title}/procServ.log",
               rotate_every: 'day',
               rotate: 30,
+              size: '10M',
               missingok: true,
               ifempty: false,
-              postrotate: "/bin/systemctl kill --signal=HUP --kill-who=main softioc-#{title}.service",
               compress: true,
             )
           }
@@ -114,6 +115,12 @@ describe 'epics::ioc' do
               creates: "/etc/init.d/softioc-#{title}",
             )
           }
+
+          it {
+            is_expected.to create_logrotate__rule("softioc-#{title}").with(
+              postrotate: "/bin/kill --signal=HUP `cat /run/softioc-#{title}.pid`",
+            )
+          }
         end
       end
 
@@ -122,7 +129,15 @@ describe 'epics::ioc' do
           os_facts.merge(service_provider: 'systemd')
         end
 
-        it { is_expected.to create_systemd__unit_file("softioc-#{title}.service") }
+        it {
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service")
+        }
+
+        it {
+          is_expected.to create_logrotate__rule("softioc-#{title}").with(
+            postrotate: "/bin/systemctl kill --signal=HUP --kill-who=main softioc-#{title}.service",
+          )
+        }
       end
 
       context 'with unsupported service provider' do
