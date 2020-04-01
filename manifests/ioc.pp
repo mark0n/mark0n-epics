@@ -196,12 +196,11 @@ define epics::ioc(
   $service_require = [
     Class["::${module_name}::carepeater"],
     Class['epics::ioc::software'],
-    Package['procserv'],
     File["/var/log/softioc-${name}"],
   ]
-  $service_require_systemd = $::service_provider ? {
-    'systemd' => [Class['systemd::systemctl::daemon_reload']],
-    default   => [],
+  $real_service_require = $::service_provider ? {
+    'systemd' => $service_require << Class['systemd::systemctl::daemon_reload'],
+    default   => $service_require,
   }
 
   service { "softioc-${name}":
@@ -210,7 +209,7 @@ define epics::ioc(
     hasrestart => true,
     hasstatus  => true,
     provider   => $::service_provider,
-    require    => $service_require + $service_require_systemd,
+    require    => $real_service_require,
   }
 
   if $run_make and $run_make_after_pkg_update {
