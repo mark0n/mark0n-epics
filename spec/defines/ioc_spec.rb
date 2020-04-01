@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe 'epics::ioc' do
   let(:title) { 'testioc' }
+  let(:node) { 'test.example.com' }
   let(:params) do
     {}
   end
@@ -110,15 +111,49 @@ describe 'epics::ioc' do
           end
 
           it {
+            is_expected.to create_file("/etc/iocs/#{title}").with(
+              ensure: 'directory',
+              group: 'softioc',
+            )
+          }
+
+          it {
+            is_expected.to create_file("/etc/iocs/#{title}/config").with(
+              ensure: 'present',
+              notify: "Service[softioc-#{title}]",
+            )
+          }
+          it {
+            is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^NAME=#{title}$})
+            is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^PORT=4051$})
+            is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^HOST=#{node}$})
+            is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^USER=softioc-testioc$})
+            is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^CORESIZE=10000000$})
+            is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^CHDIR=/usr/local/lib/iocapps/testioc/iocBoot/ioc\${HOST_ARCH}$})
+          }
+
+          it {
             is_expected.to create_exec("create init script for softioc #{title}").with(
               command: "/usr/bin/manage-iocs install #{title}",
               creates: "/etc/init.d/softioc-#{title}",
+              require: "File[/etc/iocs/#{title}/config]",
+              before: "Service[softioc-#{title}]",
             )
           }
 
           it {
             is_expected.to create_logrotate__rule("softioc-#{title}").with(
               postrotate: "/bin/kill --signal=HUP `cat /run/softioc-#{title}.pid`",
+            )
+          }
+
+          it {
+            is_expected.to create_service("softioc-#{title}").with_require(
+              [
+                'Class[Epics::Carepeater]',
+                'Class[Epics::Ioc::Software]',
+                "File[/var/log/softioc-#{title}]",
+              ],
             )
           }
         end
@@ -130,12 +165,43 @@ describe 'epics::ioc' do
         end
 
         it {
-          is_expected.to create_systemd__unit_file("softioc-#{title}.service")
+          # [Unit] section
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^Requires=network.target$})
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^Wants=caRepeater.service$})
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^After=([^ ]+ +)*?caRepeater.service( +[^ ]+)*?$})
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^After=([^ ]+ +)*?network.target( +[^ ]+)*?$})
+          # [Service] section
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^Environment="EPICS_IOC_LOG_PORT=7004"$})
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+            %r{
+              ^ExecStart=/usr/bin/procServ\s+--foreground\s+--quiet\s+--chdir=/usr/local/lib/iocapps/testioc/iocBoot/ioc\${HOST_ARCH}\s+
+              --ignore=\^C\^D\^\]\s+--coresize=10000000\s+--restrict\s+--logfile=/var/log/softioc-testioc/procServ.log\s+
+              --name\s+testioc\s+--port\s+4051\s+--port\s+unix:/run/softioc-testioc/procServ.sock\s+
+              /usr/local/lib/iocapps/testioc/iocBoot/ioc\${HOST_ARCH}/st.cmd$
+            }x,
+          )
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^Restart=always$})
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^User=softioc-testioc$})
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^RuntimeDirectory=softioc-testioc$})
+          # [Install] section
+          is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^WantedBy=multi-user.target$})
         }
+        it { is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_notify("Service[softioc-#{title}]") }
 
         it {
           is_expected.to create_logrotate__rule("softioc-#{title}").with(
             postrotate: "/bin/systemctl kill --signal=HUP --kill-who=main softioc-#{title}.service",
+          )
+        }
+
+        it {
+          is_expected.to create_service("softioc-#{title}").with_require(
+            [
+              'Class[Epics::Carepeater]',
+              'Class[Epics::Ioc::Software]',
+              "File[/var/log/softioc-#{title}]",
+              'Class[Systemd::Systemctl::Daemon_reload]',
+            ],
           )
         }
       end
