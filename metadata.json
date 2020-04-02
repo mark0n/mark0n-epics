@@ -3,7 +3,7 @@
   "version": "1.3.0",
   "author": "mark0n",
   "summary": "Manage the base components of the Experimental Physics and Industrial Control System (EPICS)",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "source": "https://github.com/frib-high-level-controls/mark0n-epics.git",
   "project_page": "https://github.com/frib-high-level-controls/mark0n-epics",
   "issues_url": "https://github.com/frib-high-level-controls/mark0n-epics/issues",
