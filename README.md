@@ -1,3 +1,10 @@
+# puppet-epics
+[![Build Status](https://travis-ci.com/mark0n/mark0n-epics.svg?branch=master)](https://travis-ci.com/mark0n/mark0n-epics)
+[![Coverage Status](https://coveralls.io/repos/github/mark0n/mark0n-epics/badge.svg?branch=master)](https://coveralls.io/github/mark0n/mark0n-epics?branch=master)
+[![License](https://img.shields.io/github/license/mark0n/mark0n-epics.svg)](https://github.com/mark0n/mark0n-epics/blob/master/LICENSE)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/mark0n/epics.svg)](https://forge.puppetlabs.com/mark0n/epics)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/mark0n/epics.svg)](https://forge.puppetlabs.com/mark0n/epics)
+
 This Puppet module installs and configures an EPICS soft IOC. The IOC is run in
 `procServ` to ease maintenance. The IOC can be started/stopped as a system
 service.
