@@ -214,9 +214,13 @@ define epics::ioc(
 
   if $run_make and $run_make_after_pkg_update {
     Package <| tag == 'epics_ioc_pkg' |> ~> Exec["build IOC ${name}"]
+  } elsif !$run_make and $run_make_after_pkg_update {
+    fail("Module '${module_name}': run_make_after_pkg_update => true cannot be combined with run_make => false")
   }
 
   if $run_make and $auto_restart_ioc {
     Exec["build IOC ${name}"] ~> Service["softioc-${name}"]
+  } elsif !$run_make and $auto_restart_ioc {
+    fail("Module '${module_name}': auto_restart_ioc => true cannot be combined with run_make => false")
   }
 }
