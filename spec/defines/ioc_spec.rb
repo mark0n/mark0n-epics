@@ -8,6 +8,7 @@ describe 'epics::ioc' do
   let(:params) do
     {}
   end
+  let(:pre_condition) { 'package { \'foo\': ensure => latest, tag => \'epics_ioc_pkg\' }' }
 
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
@@ -50,7 +51,7 @@ describe 'epics::ioc' do
 
           it { is_expected.to create_class('epics::telnet') }
 
-          it { is_expected.to create_class('epics::unix_domain_socket') }
+          it { is_expected.to create_class('epics::ioc::unix_domain_socket') }
 
           it {
             is_expected.to create_exec("build IOC #{title}").with(
@@ -70,6 +71,20 @@ describe 'epics::ioc' do
             )
             is_expected.to create_user("softioc-#{title}").that_comes_before("Service[softioc-#{title}]")
           }
+
+          context 'with manage_autosave_dir => true' do
+            let(:params) { { 'manage_autosave_dir' => true } }
+
+            it {
+              is_expected.to create_file("/var/lib/softioc-#{title}").with(
+                ensure: 'directory',
+                owner: "softioc-#{title}",
+                group: 'softioc',
+                mode: '0775',
+              )
+              is_expected.to create_file("/var/lib/softioc-#{title}").that_comes_before("Service[softioc-#{title}]")
+            }
+          end
 
           it {
             is_expected.to create_file("/var/log/softioc-#{title}").with(
@@ -101,6 +116,59 @@ describe 'epics::ioc' do
               provider: serv_prov,
             )
           }
+
+          it {
+            is_expected.to create_service("softioc-#{title}").that_subscribes_to('Package[foo]')
+          }
+
+          context 'with run_make => false, auto_restart_ioc => false, run_make_after_pkg_update => false' do
+            let(:params) { { 'run_make' => false, 'auto_restart_ioc' => false, 'run_make_after_pkg_update' => false } }
+
+            it { is_expected.not_to create_exec("build IOC #{title}") }
+          end
+          context 'with run_make => false, auto_restart_ioc => false, run_make_after_pkg_update => true' do
+            let(:params) { { 'run_make' => false, 'auto_restart_ioc' => false, 'run_make_after_pkg_update' => true } }
+
+            it { is_expected.to compile.and_raise_error(%r{run_make_after_pkg_update => true cannot be combined with run_make => false}) }
+          end
+          context 'with run_make => false, auto_restart_ioc => true, run_make_after_pkg_update => false' do
+            let(:params) { { 'run_make' => false, 'auto_restart_ioc' => true, 'run_make_after_pkg_update' => false } }
+
+            it { is_expected.to compile.and_raise_error(%r{.*auto_restart_ioc => true cannot be combined with run_make => false}) }
+          end
+          context 'with run_make => false, auto_restart_ioc => true, run_make_after_pkg_update => true' do
+            let(:params) { { 'run_make' => false, 'auto_restart_ioc' => true, 'run_make_after_pkg_update' => true } }
+
+            it { is_expected.to compile.and_raise_error(%r{.*(auto_restart_ioc|run_make_after_pkg_update) => true cannot be combined with run_make => false}) }
+          end
+          context 'with run_make => true, auto_restart_ioc => false, run_make_after_pkg_update => false' do
+            let(:params) { { 'run_make' => true, 'auto_restart_ioc' => false, 'run_make_after_pkg_update' => false } }
+
+            it { is_expected.to create_exec("build IOC #{title}") }
+            it { is_expected.not_to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
+            it { is_expected.not_to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
+          end
+          context 'with run_make => true, auto_restart_ioc => false, run_make_after_pkg_update => true' do
+            let(:params) { { 'run_make' => true, 'auto_restart_ioc' => false, 'run_make_after_pkg_update' => true } }
+
+            it { is_expected.to create_exec("build IOC #{title}") }
+            it { is_expected.not_to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
+            it { is_expected.to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
+          end
+          context 'with run_make => true, auto_restart_ioc => true, run_make_after_pkg_update => false' do
+            let(:params) { { 'run_make' => true, 'auto_restart_ioc' => true, 'run_make_after_pkg_update' => false } }
+
+            it { is_expected.to create_exec("build IOC #{title}") }
+            it { is_expected.to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
+            it { is_expected.not_to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
+          end
+          context 'with run_make => true, auto_restart_ioc => true, run_make_after_pkg_update => true' do
+            let(:params) { { 'run_make' => true, 'auto_restart_ioc' => true, 'run_make_after_pkg_update' => true } }
+
+            it { is_expected.to create_exec("build IOC #{title}") }
+            it { is_expected.to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
+            it { is_expected.to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
+          end
         end
       end
 
@@ -211,7 +279,7 @@ describe 'epics::ioc' do
           os_facts.merge(service_provider: 'unsupported')
         end
 
-        it { is_expected.to compile.and_raise_error(%r{.*doesn't support service provider 'unsupported'.*}) }
+        it { is_expected.to compile.and_raise_error(%r{doesn't support service provider 'unsupported'}) }
       end
     end
   end
