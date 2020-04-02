@@ -44,7 +44,7 @@ describe 'epics::ioc' do
               enable: true,
               executable: '/usr/bin/caRepeater',
               port: 5065,
-              unit_file_ensure: 'present',
+              dropin_file_ensure: 'present',
               user: 'nobody',
             )
           }
