@@ -20,12 +20,12 @@ class epics(
       group   => $group,
       mode    => '0644',
     }
-  }
 
-  file { '/etc/iocs':
-    ensure => directory,
-    owner  => $owner,
-    group  => $group,
+    file { '/etc/iocs':
+      ensure => directory,
+      owner  => $owner,
+      group  => $group,
+    }
   }
 
   file { $iocbase:

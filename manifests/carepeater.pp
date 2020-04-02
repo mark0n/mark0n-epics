@@ -18,7 +18,7 @@ class epics::carepeater(
   Boolean                           $enable,
   String                            $executable,
   Stdlib::Port                      $port,
-  Enum['present', 'absent', 'file'] $unit_file_ensure,
+  Enum['present', 'absent', 'file'] $dropin_file_ensure,
   String                            $user,
 ) {
   include ::epics::catools
@@ -29,6 +29,7 @@ class epics::carepeater(
       # We only add a drop-in file to allow some configuration.
 
       systemd::dropin_file { '10-params.conf':
+        ensure  => $dropin_file_ensure,
         unit    => 'caRepeater.service',
         content => template("${module_name}/caRepeater/systemd/10-params.conf"),
         notify  => Service['caRepeater'],

@@ -7,7 +7,7 @@ epics::carepeater::ensure: running
 epics::carepeater::enable: true
 epics::carepeater::executable: /usr/bin/caRepeater
 epics::carepeater::port: 5065
-epics::carepeater::unit_file_ensure: present
+epics::carepeater::dropin_file_ensure: present
 epics::carepeater::user: nobody
 epics::catools::ensure: latest
 epics::group: softioc
