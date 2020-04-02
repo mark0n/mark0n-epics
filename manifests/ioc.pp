@@ -96,7 +96,7 @@ define epics::ioc(
   }
 
   if $enable_unix_domain_socket {
-    include epics::unix_domain_socket
+    include epics::ioc::unix_domain_socket
   }
 
   if $run_make {
