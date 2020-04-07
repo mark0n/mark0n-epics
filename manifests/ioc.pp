@@ -92,7 +92,7 @@ define epics::ioc(
   }
 
   if $enable_console_port {
-    include epics::telnet
+    include epics::ioc::telnet
   }
 
   if $enable_unix_domain_socket {

@@ -49,7 +49,7 @@ describe 'epics::ioc' do
             )
           }
 
-          it { is_expected.to create_class('epics::telnet') }
+          it { is_expected.to create_class('epics::ioc::telnet') }
 
           it { is_expected.to create_class('epics::ioc::unix_domain_socket') }
 
