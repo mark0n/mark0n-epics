@@ -1,5 +1,11 @@
+# Submit code coverage data to https://coveralls.io
+require 'simplecov'
 require 'coveralls'
-Coveralls.wear!
+require 'simplecov-console'
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  add_filter '/spec/fixtures/modules'
+end
 
 # frozen_string_literal: true
 
