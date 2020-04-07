@@ -5,14 +5,62 @@
 # multiple clients which allows all clients running on the machine to be
 # notified when IOCs are started or stopped. This often leads to faster
 # reconnects after IOC restarts. See the
-# [Channel Access Reference Manual](https://epics.anl.gov/base/R3-15/7-docs/CAref.html#Repeater)
+# [Channel Access Reference Manual](https://epics.anl.gov/base/R7-0/3-docs/CAref.html#Repeater)
 # for details.
-# The epics-catools Debian package automatically enables and starts caRepeater.
-# We still provide a way of actively managing it to give admins more
-# flexibility.
 #
-# @example
+# In some cases installing the package containing the Channel Access Repeater
+# executable might be sufficient to start the Channel Access Repeater service.
+# However, this class provides more fine-grained control allowing users to run
+# the service on a custom port or under a different user. It can also ensure the
+# service is actually running (e.g. if a sysadmin stops it and forgets to start
+# it after the maintenance work is finished).
+#
+# @example Ensure Channel Access Repeater is running
 #   include epics::carepeater
+#
+# @example Ensure Channel Access Repeater is not running
+#   class { 'epics::carepeater':
+#     ensure => 'stopped',
+#     enable => false,
+#   }
+#
+# @example Ensure Channel Access Repeater is running with custom port and user
+#   class { 'epics::carepeater':
+#     port => 5077,
+#     user => 'epics',
+#   }
+#
+# @param ensure
+#   Specifies whether the Channel Access Repeater service should be running.
+#   Valid values are 'running', 'stopped'. Defaults to 'running'.
+#
+# @param enable
+#   Whether the Channel Access Repeater service should be enabled. This
+#   determines if the service is started on system boot. Valid values are true,
+#   false. Defaults to true.
+#
+# @param executable
+#   Channel Access Repeater executable. Defaults to '/usr/bin/caRepeater'.
+#
+# @param port
+#   Port that the Channel Access Repeater will listen on. This is setting the
+#   value of the `EPICS_CA_REPEATER_PORT` environment variable. Defaults to
+#   5065.
+#
+# @param dropin_file_ensure
+#   EPICS Base comes with a systemd service file that allows Channel Access
+#   Repeater to be started. However, by itself it doesn't allow its
+#   configuration to be tweaked (e.g. custom port, user name etc.). This class
+#   thus augments the systemd service file that comes with EPICS with a drop-in
+#   file allowing for additional configuration. This parameter controls whether
+#   this drop-in file should exist or not. Please refer to the
+#   [camptocamp/systemd documentation](https://forge.puppet.com/camptocamp/systemd#drop-in-files)
+#   for details. Defaults to 'present'.
+#
+# @param user
+#   User that the Channel Access Repeater service will run as. Defaults to
+#   'nobody'.
+#
 class epics::carepeater(
   Stdlib::Ensure::Service           $ensure,
   Boolean                           $enable,

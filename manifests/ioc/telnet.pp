@@ -1,6 +1,10 @@
-# This class contains resources which are required when procServ is used with
-# telnet
+# @summary Install tools to connect to procServ using TCP.
 #
-class epics::telnet() {
+# Install telnet to allow IOC engineers to connect to the IOC shell port
+# provided by procServ.
+#
+# @api private
+#
+class epics::ioc::telnet() {
   include telnet
 }
