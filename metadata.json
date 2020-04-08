@@ -4,9 +4,9 @@
   "author": "mark0n",
   "summary": "Manage the base components of the Experimental Physics and Industrial Control System (EPICS)",
   "license": "Apache-2.0",
-  "source": "https://github.com/frib-high-level-controls/mark0n-epics.git",
-  "project_page": "https://github.com/frib-high-level-controls/mark0n-epics",
-  "issues_url": "https://github.com/frib-high-level-controls/mark0n-epics/issues",
+  "source": "https://github.com/mark0n/mark0n-epics.git",
+  "project_page": "https://github.com/mark0n/mark0n-epics",
+  "issues_url": "https://github.com/mark0n/mark0n-epics/issues",
   "dependencies": [
     {
       "name": "puppetlabs-stdlib",
