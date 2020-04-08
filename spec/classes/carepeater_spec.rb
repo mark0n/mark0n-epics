@@ -100,6 +100,7 @@ describe 'epics::carepeater' do
         it { is_expected.to create_systemd__dropin_file('10-params.conf').with_content(%r{^ExecStart=/usr/bin/caRepeater$}) }
         it { is_expected.to create_systemd__dropin_file('10-params.conf').with_content(%r{^Environment=EPICS_CA_REPEATER_PORT=5065$}) }
         it { is_expected.to create_systemd__dropin_file('10-params.conf').with_content(%r{^User=nobody$}) }
+        it { is_expected.to create_service('caRepeater').that_requires('Class[systemd::systemctl::daemon_reload]') }
 
         context 'with ensure => stopped' do
           let(:params) { { 'ensure' => 'stopped' } }
