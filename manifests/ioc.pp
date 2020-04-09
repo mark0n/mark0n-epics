@@ -90,20 +90,19 @@
 #     tag    => 'epics_ioc_pkg',
 #   }
 #
-#   vcsrepo { '/usr/local/lib/iocapps/llrf':
-#     ensure   => 'latest',
-#     source   => 'git://example.com/llrfioc.git',
-#     provider => 'git',
-#     owner    => 'softioc-llrf',
-#     group    => 'softioc',
-#   }
+#   vcsrepo {
+#     default:
+#       ensure   => 'latest',
+#       provider => 'git',
+#       group    => 'softioc',;
 #
-#   vcsrepo { '/usr/local/lib/iocapps/cryo':
-#     ensure   => 'latest',
-#     source   => 'git://example.com/cryo.git',
-#     provider => 'git',
-#     owner    => 'softioc-cryo',
-#     group    => 'softioc',
+#     '/usr/local/lib/iocapps/llrf':
+#       source   => 'git://example.com/llrfioc.git',
+#       owner    => 'softioc-llrf',;
+#
+#     '/usr/local/lib/iocapps/cryo':
+#       source   => 'git://example.com/cryo.git',
+#       owner    => 'softioc-cryo',;
 #   }
 #
 #   # Settings for all IOC instances (consider putting this into a facility-wide
