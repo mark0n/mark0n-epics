@@ -528,23 +528,20 @@ define epics::ioc(
     compress     => $logrotate_compress,
   }
 
-  $service_require = [
-    Class["::${module_name}::carepeater"],
-    Class['epics::ioc::software'],
-    File["/var/log/softioc-${name}"],
-  ]
-  $real_service_require = $::service_provider ? {
-    'systemd' => $service_require << Class['systemd::systemctl::daemon_reload'],
-    default   => $service_require,
-  }
-
   service { "softioc-${name}":
     ensure     => $ensure,
     enable     => $enable,
     hasrestart => true,
     hasstatus  => true,
     provider   => $::service_provider,
-    require    => $real_service_require,
+    require    => [
+      Class["::${module_name}::carepeater"],
+      Class['epics::ioc::software'],
+      File["/var/log/softioc-${name}"],
+    ],
+  }
+  if $::service_provider == 'systemd' {
+    Class['systemd::systemctl::daemon_reload'] -> Service["softioc-${name}"]
   }
 
   if $run_make and $run_make_after_pkg_update {
