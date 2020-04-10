@@ -5,7 +5,7 @@ USER=<%= @username %>
 CORESIZE=<%= @coresize %>
 CHDIR=<%= @absbootdir %>
 <% if @cfg_append -%>
-  <%- @cfg_append.each do |string| -%>
+  <%- @cfg_append.sort.each do |string| -%>
     <%= string %>
   <%- end -%>
 <%- end -%>

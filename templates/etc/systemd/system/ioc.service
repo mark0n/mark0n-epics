@@ -6,7 +6,7 @@ After=<%= @real_systemd_after.join(' ') %>
 RequiresMountsFor=<%= @systemd_requires_mounts_for.join(' ') %>
 
 [Service]
-<% @real_env_vars.each_pair do |key, val| -%>
+<% @real_env_vars.sort.map do |key, val| -%>
 Environment="<%= key %>=<%= val %>"
 <% end -%>
 EnvironmentFile=-/etc/iocs/<%= @name -%>/config

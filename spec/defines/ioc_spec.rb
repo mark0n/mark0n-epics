@@ -272,6 +272,15 @@ describe 'epics::ioc' do
             ],
           )
         }
+
+        # Ensure "Environment=" lines are sorted to generate stable results
+        context 'with service_provider systemd' do
+          let(:params) { { 'env_vars' => { 'strawberry' => 'red', 'banana' => 'yellow', 'cucumber' => 'green' } } }
+
+          it {
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{Environment="banana=yellow"\nEnvironment="cucumber=green"\nEnvironment="strawberry=red"}m)
+          }
+        end
       end
 
       context 'with unsupported service provider' do
