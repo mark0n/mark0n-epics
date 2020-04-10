@@ -216,7 +216,7 @@ describe 'epics::ioc' do
           }
 
           it {
-            is_expected.to create_service("softioc-#{title}").with_require(
+            is_expected.to create_service("softioc-#{title}").that_requires(
               [
                 'Class[Epics::Carepeater]',
                 'Class[Epics::Ioc::Software]',
@@ -254,7 +254,7 @@ describe 'epics::ioc' do
           # [Install] section
           is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{^WantedBy=multi-user.target$})
         }
-        it { is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_notify("Service[softioc-#{title}]") }
+        it { is_expected.to create_systemd__unit_file("softioc-#{title}.service").that_notifies("Service[softioc-#{title}]") }
 
         it {
           is_expected.to create_logrotate__rule("softioc-#{title}").with(
@@ -263,7 +263,7 @@ describe 'epics::ioc' do
         }
 
         it {
-          is_expected.to create_service("softioc-#{title}").with_require(
+          is_expected.to create_service("softioc-#{title}").that_requires(
             [
               'Class[Epics::Carepeater]',
               'Class[Epics::Ioc::Software]',
