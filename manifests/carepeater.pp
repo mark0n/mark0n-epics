@@ -69,7 +69,7 @@ class epics::carepeater(
   Enum['present', 'absent', 'file'] $dropin_file_ensure,
   String                            $user,
 ) {
-  include ::epics::catools
+  include "::${module_name}::catools"
 
   case $::service_provider {
     'systemd': {
@@ -113,6 +113,6 @@ class epics::carepeater(
     ensure     => $ensure,
     enable     => $enable,
     hasrestart => true,
-    require    => Class['::epics::catools'],
+    require    => Class["::${module_name}::catools"],
   }
 }

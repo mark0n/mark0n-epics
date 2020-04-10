@@ -377,6 +377,9 @@ define epics::ioc(
   include "::${module_name}::ioc::software"
   include "::${module_name}::carepeater"
 
+  $real_systemd_after = $systemd_after << 'caRepeater.service'
+  $real_systemd_wants = $systemd_wants << 'caRepeater.service'
+
   $abstopdir = "${epics::iocbase}/${name}"
   if($bootdir) {
     $absbootdir = "${abstopdir}/${bootdir}"
@@ -427,11 +430,11 @@ define epics::ioc(
   }
 
   if $enable_console_port {
-    include epics::ioc::telnet
+    include "::${module_name}::ioc::telnet"
   }
 
   if $enable_unix_domain_socket {
-    include epics::ioc::unix_domain_socket
+    include "::${module_name}::ioc::unix_domain_socket"
   }
 
   if $run_make {
@@ -440,7 +443,7 @@ define epics::ioc(
       cwd       => $abstopdir,
       umask     => '002',
       unless    => '/usr/bin/make CHECK_RELEASE=NO CHECK_RELEASE_NO= --question',
-      require   => Class['epics::ioc::software'],
+      require   => Class["::${module_name}::ioc::software"],
       subscribe => Package['epics-dev'],
     }
   }
@@ -463,14 +466,6 @@ define epics::ioc(
       mode   => '0775',
       before => Service["softioc-${name}"],
     }
-  }
-
-  if defined(Class[epics::carepeater]) {
-    $real_systemd_after = $systemd_after << 'caRepeater.service'
-    $real_systemd_wants = $systemd_wants << 'caRepeater.service'
-  } else {
-    $real_systemd_after = $systemd_after
-    $real_systemd_wants = $systemd_wants
   }
 
   case $::service_provider {
@@ -536,7 +531,7 @@ define epics::ioc(
     provider   => $::service_provider,
     require    => [
       Class["::${module_name}::carepeater"],
-      Class['epics::ioc::software'],
+      Class["::${module_name}::ioc::software"],
       File["/var/log/softioc-${name}"],
     ],
   }
