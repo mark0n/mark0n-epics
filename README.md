@@ -45,7 +45,3 @@ pdk test unit --parallel
 ```
 puppet strings generate --format markdown
 ```
-
-## Contact
-
-Author: Martin Konrad <konrad at frib.msu.edu>
