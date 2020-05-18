@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v2.1.0](https://github.com/mark0n/mark0n-epics/tree/2.1.0) (2020-05-18)
+
+**Added**
+
+- Bring back the abstopdir parameter that had been removed with v2.0.0.
+
+[Full Changelog](https://github.com/mark0n/mark0n-epics/compare/2.0.3...2.1.0)
+
 ## [v2.0.3](https://github.com/mark0n/mark0n-epics/tree/2.0.3) (2020-04-10)
 
 **Fixed**
