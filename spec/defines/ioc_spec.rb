@@ -169,6 +169,16 @@ describe 'epics::ioc' do
             it { is_expected.to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
             it { is_expected.to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
           end
+
+          context 'with abstopdir => \'/arbitrary/directory\'' do
+            let(:params) { { 'abstopdir' => '/arbitrary/directory' } }
+
+            it {
+              is_expected.to create_exec("build IOC #{title}").with(
+                cwd: '/arbitrary/directory',
+              )
+            }
+          end
         end
       end
 
@@ -224,6 +234,14 @@ describe 'epics::ioc' do
               ],
             )
           }
+
+          context 'with abstopdir => \'/arbitrary/path\'' do
+            let(:params) { { 'abstopdir' => '/arbitrary/path' } }
+
+            it {
+              is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^CHDIR=/arbitrary/path/iocBoot/ioc\${HOST_ARCH}$})
+            }
+          end
         end
       end
 
@@ -279,6 +297,21 @@ describe 'epics::ioc' do
 
           it {
             is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(%r{Environment="banana=yellow"\nEnvironment="cucumber=green"\nEnvironment="strawberry=red"}m)
+          }
+        end
+
+        context 'with abstopdir => \'/arbitrary/path\'' do
+          let(:params) { { 'abstopdir' => '/arbitrary/path' } }
+
+          it {
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^ExecStart=/usr/bin/procServ\s+--foreground\s+--quiet\s+--chdir=/arbitrary/path/iocBoot/ioc\${HOST_ARCH}\s+
+                --ignore=\^C\^D\^\]\s+--coresize=10000000\s+--restrict\s+--logfile=/var/log/softioc-testioc/procServ.log\s+
+                --name\s+testioc\s+--port\s+4051\s+--port\s+unix:/run/softioc-testioc/procServ.sock\s+
+                /arbitrary/path/iocBoot/ioc\${HOST_ARCH}/st.cmd$
+              }x,
+            )
           }
         end
       end
