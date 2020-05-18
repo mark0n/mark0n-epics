@@ -274,7 +274,7 @@ describe 'epics::ioc' do
         }
 
         # Ensure "Environment=" lines are sorted to generate stable results
-        context 'with service_provider systemd' do
+        context 'with environment variables defined' do
           let(:params) { { 'env_vars' => { 'strawberry' => 'red', 'banana' => 'yellow', 'cucumber' => 'green' } } }
 
           it {
