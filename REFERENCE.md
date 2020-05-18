@@ -669,6 +669,25 @@ arbitrary user id will be picked. This argument is only used if
 
 Default value: `undef`
 
+##### `abstopdir`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Defines the directory where the IOC code is located. This needs to be an
+absolute path. Defaults to '<iocbase>/<ioc_name>'.
+
+Note: This parameter is usually only needed in some rare corner cases (for
+example if the TOP directory of an IOC is not the top directory of the
+revision-control repository). Avoid its use if you can and clean up your
+directory layout instead. Think of having all IOC directories in a well
+known place not as a restriction but as a best practice allowing IOC
+engineers to quickly find their way around - even if they are not the
+primary maintainer of that IOC machine. Also note that this parameter cannot
+be used on machines using System-V-style init scripts due to limitations of
+the sysv-rc-softioc tools used to manage them.
+
+Default value: `undef`
+
 ##### `username`
 
 Data type: `String`
