@@ -379,7 +379,7 @@ define epics::ioc(
   Boolean                              $run_make                    = lookup('epics::ioc::run_make', Boolean),
   Boolean                              $run_make_after_pkg_update   = lookup('epics::ioc::run_make_after_pkg_update', Boolean),
   Optional[Integer]                    $uid                         = undef,
-  String                               $abstopdir                   = "${epics::iocbase}/${name}",
+  Optional[Stdlib::Absolutepath]       $abstopdir                   = undef,
   String                               $username                    = lookup('epics::ioc::username', { 'default_value' => "softioc-${name}" }),
   Boolean                              $manage_user                 = lookup('epics::ioc::manage_user', Boolean),
   Array[String]                        $systemd_after               = lookup('epics::ioc::systemd_after', Array[String]),
@@ -395,10 +395,16 @@ define epics::ioc(
   $real_systemd_after = $systemd_after << 'caRepeater.service'
   $real_systemd_wants = $systemd_wants << 'caRepeater.service'
 
-  if($bootdir) {
-    $absbootdir = "${abstopdir}/${bootdir}"
+  if($abstopdir) {
+    $real_abstopdir = $abstopdir
   } else {
-    $absbootdir = $abstopdir
+    $real_abstopdir = "${epics::iocbase}/${name}"
+  }
+
+  if($bootdir) {
+    $absbootdir = "${$real_abstopdir}/${bootdir}"
+  } else {
+    $absbootdir = $real_abstopdir
   }
 
   if $ca_addr_list {
@@ -454,7 +460,7 @@ define epics::ioc(
   if $run_make {
     exec { "build IOC ${name}":
       command   => '/usr/bin/make distclean all',
-      cwd       => $abstopdir,
+      cwd       => $real_abstopdir,
       umask     => '002',
       unless    => '/usr/bin/make CHECK_RELEASE=NO CHECK_RELEASE_NO= --question',
       require   => Class["::${module_name}::ioc::software"],
