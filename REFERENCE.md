@@ -353,39 +353,39 @@ vcsrepo {
     owner    => 'softioc-cryo',;
 }
 
-# Settings for all IOC instances (consider putting this into a facility-wide
-# profile that is applied to all IOC machines):
-Epics::Ioc {
-  manage_autosave_dir => true,
-  autosave_base_dir   => '/mnt/autosave',
-  log_server          => 'log.example.com',
-}
+epics::ioc {
+  # Settings for all IOC instances (often distributed in form of
+  # facility-wide Hiera data instead):
+  default:
+    manage_autosave_dir => true,
+    autosave_base_dir   => '/mnt/autosave',
+    log_server          => 'log.example.com',;
 
-# For this IOC we always want the latest and greatest so we let Puppet
-# rebuild and restart it whenever new IOC code is pulled from the Git repo
-# or when a new version of a support package is installed:
-epics::ioc { 'llrf':
-  console_port => 4051,
-  subscribe    => [
-    Package['epics-autosave-dev'],          # rebuild and restart when package is updated
-    Package['epics-asyn-dev'],              # rebuild and restart when package is updated
-    Vcsrepo['/usr/local/lib/iocapps/llrf'], # rebuild and restart when package is updated
-  ],
-}
+  # For this IOC we always want the latest and greatest so we let Puppet
+  # rebuild and restart it whenever new IOC code is pulled from the Git repo
+  # or when a new version of a support package is installed:
+  'llrf':
+    console_port => 4051,
+    subscribe    => [
+      Package['epics-autosave-dev'],          # rebuild and restart when package is updated
+      Package['epics-asyn-dev'],              # rebuild and restart when package is updated
+      Vcsrepo['/usr/local/lib/iocapps/llrf'], # rebuild and restart when package is updated
+    ],;
 
-# For this IOC we can't afford any unplanned downtime so we rebuild but
-# do not automatically restart this IOC. Rebuilding the IOC ensures that
-# even in case the IOC crashes we always have a binary that is ready to run
-# (we don't want to end up starting an IOC executable that has been linked
-# against an old version of a library which has been removed from the system).
-epics::ioc { 'cryo':
-  console_port     => 4052,
-  auto_restart_ioc => false,
-  subscribe        => [
-    Package['epics-asyn-dev'],
-    Package['epics-stream-dev'],
-    Vcsrepo['/usr/local/lib/iocapps/cryo'],
-  ],
+  # For this IOC we can't afford any unplanned downtime so we rebuild but
+  # do not automatically restart this IOC. Rebuilding the IOC ensures that
+  # even in case the IOC crashes we always have a binary that is ready to
+  # run (we don't want to end up starting an IOC executable that has been
+  # linked against an old version of a library which has been removed from
+  # the system).
+  'cryo':
+    console_port     => 4052,
+    auto_restart_ioc => false,
+    subscribe        => [
+      Package['epics-asyn-dev'],
+      Package['epics-stream-dev'],
+      Vcsrepo['/usr/local/lib/iocapps/cryo'],
+    ],;
 }
 ```
 
