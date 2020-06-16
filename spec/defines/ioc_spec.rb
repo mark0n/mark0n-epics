@@ -125,6 +125,7 @@ describe 'epics::ioc' do
             let(:params) { { 'run_make' => false, 'auto_restart_ioc' => false, 'run_make_after_pkg_update' => false } }
 
             it { is_expected.not_to create_exec("build IOC #{title}") }
+            it { is_expected.to create_service("softioc-#{title}").with(restart: '/usr/bin/true') }
           end
           context 'with run_make => false, auto_restart_ioc => false, run_make_after_pkg_update => true' do
             let(:params) { { 'run_make' => false, 'auto_restart_ioc' => false, 'run_make_after_pkg_update' => true } }
@@ -147,6 +148,7 @@ describe 'epics::ioc' do
             it { is_expected.to create_exec("build IOC #{title}") }
             it { is_expected.not_to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
             it { is_expected.not_to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
+            it { is_expected.to create_service("softioc-#{title}").with(restart: '/usr/bin/true') }
           end
           context 'with run_make => true, auto_restart_ioc => false, run_make_after_pkg_update => true' do
             let(:params) { { 'run_make' => true, 'auto_restart_ioc' => false, 'run_make_after_pkg_update' => true } }
@@ -154,6 +156,7 @@ describe 'epics::ioc' do
             it { is_expected.to create_exec("build IOC #{title}") }
             it { is_expected.not_to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
             it { is_expected.to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
+            it { is_expected.to create_service("softioc-#{title}").with(restart: '/usr/bin/true') }
           end
           context 'with run_make => true, auto_restart_ioc => true, run_make_after_pkg_update => false' do
             let(:params) { { 'run_make' => true, 'auto_restart_ioc' => true, 'run_make_after_pkg_update' => false } }
@@ -161,6 +164,7 @@ describe 'epics::ioc' do
             it { is_expected.to create_exec("build IOC #{title}") }
             it { is_expected.to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
             it { is_expected.not_to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
+            it { is_expected.not_to create_service("softioc-#{title}").with(restart: '/usr/bin/true') }
           end
           context 'with run_make => true, auto_restart_ioc => true, run_make_after_pkg_update => true' do
             let(:params) { { 'run_make' => true, 'auto_restart_ioc' => true, 'run_make_after_pkg_update' => true } }
@@ -168,6 +172,7 @@ describe 'epics::ioc' do
             it { is_expected.to create_exec("build IOC #{title}") }
             it { is_expected.to create_service("softioc-#{title}").that_subscribes_to("Exec[build IOC #{title}]") }
             it { is_expected.to create_exec("build IOC #{title}").that_subscribes_to('Package[foo]') }
+            it { is_expected.not_to create_service("softioc-#{title}").with(restart: '/usr/bin/true') }
           end
 
           context 'with abstopdir => \'/arbitrary/directory\'' do

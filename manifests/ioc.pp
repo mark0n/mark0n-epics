@@ -543,6 +543,11 @@ define epics::ioc(
     compress     => $logrotate_compress,
   }
 
+  $service_attr = $auto_restart_ioc ? {
+    true  => {},
+    false => { 'restart' => '/usr/bin/true' }, # prevent restart
+  }
+
   service { "softioc-${name}":
     ensure     => $ensure,
     enable     => $enable,
@@ -554,6 +559,7 @@ define epics::ioc(
       Class["::${module_name}::ioc::software"],
       File["/var/log/softioc-${name}"],
     ],
+    *          => $service_attr,
   }
   if $::service_provider == 'systemd' {
     Class['systemd::systemctl::daemon_reload'] -> Service["softioc-${name}"]
