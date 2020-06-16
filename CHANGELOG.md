@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v2.1.1](https://github.com/mark0n/mark0n-epics/tree/2.1.1) (2020-06-16)
+
+**Fixed**
+
+- Do not restart IOC if auto_restart_ioc is set to "false" - even if epics::ioc is notified by an external resource.
+
+**Improved**
+
+- Simplified example for epics::ioc
+
+[Full Changelog](https://github.com/mark0n/mark0n-epics/compare/2.1.0...2.1.1)
+
 ## [v2.1.0](https://github.com/mark0n/mark0n-epics/tree/2.1.0) (2020-05-18)
 
 **Added**
