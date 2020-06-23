@@ -724,6 +724,18 @@ for details.
 
 Default value: lookup('epics::ioc::systemd_after', Array[String])
 
+##### `systemd_notify`
+
+Data type: `Boolean`
+
+Configures systemd to wait for the IOC start to complete. The IOC process
+has to notify systemd either by calling sd_notify() or by running
+systemd-notify from the st.cmd file. For most use cases adding
+'system \'/usr/bin/systemd-notify --ready --status "IOC initialized"\''
+as the last line of the st.cmd file should be sufficient. Defaults to false.
+
+Default value: lookup('epics::ioc::systemd_notify', Boolean)
+
 ##### `systemd_requires`
 
 Data type: `Array[String]`
