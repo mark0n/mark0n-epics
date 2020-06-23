@@ -31,6 +31,7 @@ epics::ioc::run_make_after_pkg_update: true
 epics::ioc::manage_user: true
 epics::ioc::systemd_after:
   - network.target
+epics::ioc::systemd_notify: false
 epics::ioc::systemd_requires:
   - network.target
 epics::ioc::systemd_wants: []

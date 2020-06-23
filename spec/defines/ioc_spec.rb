@@ -319,6 +319,40 @@ describe 'epics::ioc' do
             )
           }
         end
+
+        context 'with systemd_notify => false' do
+          let(:params) { { 'systemd_notify' => false } }
+
+          it {
+            is_expected.not_to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^Type=notify$
+              }x,
+            )
+            is_expected.not_to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^NotifyAccess=all$
+              }x,
+            )
+          }
+        end
+
+        context 'with systemd_notify => true' do
+          let(:params) { { 'systemd_notify' => true } }
+
+          it {
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^Type=notify$
+              }x,
+            )
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^NotifyAccess=all$
+              }x,
+            )
+          }
+        end
       end
 
       context 'with unsupported service provider' do

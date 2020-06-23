@@ -316,6 +316,13 @@
 #   [systemd documentation](https://www.freedesktop.org/software/systemd/man/systemd.unit.html#After=)
 #   for details.
 #
+# @param systemd_notify
+#   Configures systemd to wait for the IOC start to complete. The IOC process
+#   has to notify systemd either by calling sd_notify() or by running
+#   systemd-notify from the st.cmd file. For most use cases adding
+#   'system \'/usr/bin/systemd-notify --ready --status "IOC initialized"\''
+#   as the last line of the st.cmd file should be sufficient. Defaults to false.
+#
 # @param systemd_requires
 #   Ensures the specified systemd units are activated when this IOC is started.
 #   Defaults to ['network.target']. This parameter is ignored on systems that are
@@ -383,6 +390,7 @@ define epics::ioc(
   String                               $username                    = lookup('epics::ioc::username', { 'default_value' => "softioc-${name}" }),
   Boolean                              $manage_user                 = lookup('epics::ioc::manage_user', Boolean),
   Array[String]                        $systemd_after               = lookup('epics::ioc::systemd_after', Array[String]),
+  Boolean                              $systemd_notify              = lookup('epics::ioc::systemd_notify', Boolean),
   Array[String]                        $systemd_requires            = lookup('epics::ioc::systemd_requires', Array[String]),
   Array[String]                        $systemd_requires_mounts_for = lookup('epics::ioc::systemd_requires_mounts_for', Array[String]),
   Array[String]                        $systemd_wants               = lookup('epics::ioc::systemd_wants', Array[String]),
