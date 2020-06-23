@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v2.2.0](https://github.com/mark0n/mark0n-epics/tree/2.2.0) (2020-06-23)
+
+**Added**
+
+- Add new parameter systemd_notify to epics::ioc which can be used to configure systemd to receive a message from the IOC process when IOC start has completed. Systemd can now be configured to wait until an IOC has started up before starting services that depend on the IOC. In case the IOC crashes during boot the service fails to start. This can be reported by Puppet or IT monitoring tools.
+
+[Full Changelog](https://github.com/mark0n/mark0n-epics/compare/2.1.1...2.2.0)
+
 ## [v2.1.1](https://github.com/mark0n/mark0n-epics/tree/2.1.1) (2020-06-16)
 
 **Fixed**
