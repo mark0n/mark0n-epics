@@ -1,8 +1,8 @@
 # mark0n-epics - Manage EPICS with Puppet
 
-[![Build Status](https://travis-ci.com/mark0n/mark0n-epics.svg?branch=master)](https://travis-ci.com/mark0n/mark0n-epics)
-[![Coverage Status](https://coveralls.io/repos/github/mark0n/mark0n-epics/badge.svg?branch=master)](https://coveralls.io/github/mark0n/mark0n-epics?branch=master)
-[![License](https://img.shields.io/github/license/mark0n/mark0n-epics.svg)](https://github.com/mark0n/mark0n-epics/blob/master/LICENSE)
+[![Build Status](https://travis-ci.com/mark0n/mark0n-epics.svg?branch=main)](https://travis-ci.com/mark0n/mark0n-epics)
+[![Coverage Status](https://coveralls.io/repos/github/mark0n/mark0n-epics/badge.svg?branch=main)](https://coveralls.io/github/mark0n/mark0n-epics?branch=main)
+[![License](https://img.shields.io/github/license/mark0n/mark0n-epics.svg)](https://github.com/mark0n/mark0n-epics/blob/main/LICENSE)
 [![Puppet Forge](https://img.shields.io/puppetforge/v/mark0n/epics.svg)](https://forge.puppetlabs.com/mark0n/epics)
 [![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/mark0n/epics.svg)](https://forge.puppetlabs.com/mark0n/epics)
 
