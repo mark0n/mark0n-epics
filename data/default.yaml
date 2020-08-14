@@ -19,7 +19,7 @@ epics::ioc::startscript: st.cmd
 epics::ioc::enable_console_port: true
 epics::ioc::console_port: 4051
 epics::ioc::enable_unix_domain_socket: true
-epics::ioc::coresize: 10000000
+epics::ioc::coresize: 2147483647
 epics::ioc::cfg_append: []
 epics::ioc::env_vars: {}
 epics::ioc::log_port: 7004

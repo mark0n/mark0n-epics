@@ -211,7 +211,7 @@ describe 'epics::ioc' do
             is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^PORT=4051$})
             is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^HOST=#{node}$})
             is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^USER=softioc-testioc$})
-            is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^CORESIZE=10000000$})
+            is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^CORESIZE=2147483647$})
             is_expected.to create_file("/etc/iocs/#{title}/config").with_content(%r{^CHDIR=/usr/local/lib/iocapps/testioc/iocBoot/ioc\${HOST_ARCH}$})
           }
 
@@ -266,7 +266,7 @@ describe 'epics::ioc' do
           is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
             %r{
               ^ExecStart=/usr/bin/procServ\s+--foreground\s+--quiet\s+--chdir=/usr/local/lib/iocapps/testioc/iocBoot/ioc\${HOST_ARCH}\s+
-              --ignore=\^C\^D\^\]\s+--coresize=10000000\s+--restrict\s+--logfile=/var/log/softioc-testioc/procServ.log\s+
+              --ignore=\^C\^D\^\]\s+--coresize=2147483647\s+--restrict\s+--logfile=/var/log/softioc-testioc/procServ.log\s+
               --name\s+testioc\s+--port\s+4051\s+--port\s+unix:/run/softioc-testioc/procServ.sock\s+
               /usr/local/lib/iocapps/testioc/iocBoot/ioc\${HOST_ARCH}/st.cmd$
             }x,
@@ -312,7 +312,7 @@ describe 'epics::ioc' do
             is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
               %r{
                 ^ExecStart=/usr/bin/procServ\s+--foreground\s+--quiet\s+--chdir=/arbitrary/path/iocBoot/ioc\${HOST_ARCH}\s+
-                --ignore=\^C\^D\^\]\s+--coresize=10000000\s+--restrict\s+--logfile=/var/log/softioc-testioc/procServ.log\s+
+                --ignore=\^C\^D\^\]\s+--coresize=2147483647\s+--restrict\s+--logfile=/var/log/softioc-testioc/procServ.log\s+
                 --name\s+testioc\s+--port\s+4051\s+--port\s+unix:/run/softioc-testioc/procServ.sock\s+
                 /arbitrary/path/iocBoot/ioc\${HOST_ARCH}/st.cmd$
               }x,

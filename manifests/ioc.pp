@@ -217,7 +217,7 @@
 #
 # @param coresize
 #   The maximum size (in Bytes) of a core file that will be written in case the
-#   IOC crashes. Defaults to 10000000.
+#   IOC crashes. Defaults to 2147483647 (2 GiB).
 #
 # @param cfg_append
 #   Allows to set additional variables in the IOC's config file in '/etc/iocs/'.
