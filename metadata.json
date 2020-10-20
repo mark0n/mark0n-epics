@@ -1,6 +1,6 @@
 {
   "name": "mark0n-epics",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "author": "mark0n",
   "summary": "Manage the base components of the Experimental Physics and Industrial Control System (EPICS)",
   "license": "Apache-2.0",

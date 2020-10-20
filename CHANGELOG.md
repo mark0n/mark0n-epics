@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v2.3.0](https://github.com/mark0n/mark0n-epics/tree/2.3.0) (2020-10-20)
+
+**Added**
+
+- Add new parameter procserv_timefmt which configures the time-stamp format used by procServ when printing messages.
+- Add new parameters procserv_log_timestamp and procserv_log_timestampfmt which allow date/time to be logged along with procServ's console output. By default log files will now include time-stamps.
+
+**Improved**
+
+- Bump up default core file size to 2 GiB. Most IOCs running on PCs require at least hundreds of MBs, a few GBs isn't unusual. Facilities should consider overriding this value if disk space is very limited or when IOCs consume more memory. Note that procServ versions up to 2.8.0 do not allow this limit to be raised to more than 2 GiB.
+
+[Full Changelog](https://github.com/mark0n/mark0n-epics/compare/2.2.0...2.3.0)
+
 ## [v2.2.0](https://github.com/mark0n/mark0n-epics/tree/2.2.0) (2020-06-23)
 
 **Added**
