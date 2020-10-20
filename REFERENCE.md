@@ -543,7 +543,7 @@ Default value: "softioc-${name}/procServ.sock"
 Data type: `Integer`
 
 The maximum size (in Bytes) of a core file that will be written in case the
-IOC crashes. Defaults to 10000000.
+IOC crashes. Defaults to 2147483647 (2 GiB).
 
 Default value: lookup('epics::ioc::coresize', Integer)
 
@@ -602,6 +602,30 @@ to '/var/log/softioc-<ioc_name>/procServ.log'.
 
 Default value: "/var/log/softioc-${name}/procServ.log"
 
+##### `procserv_log_timestamp`
+
+Data type: `Boolean`
+
+Specifies whether procServ prefixes log messages with a timestamp when
+logging activity on the IOC shell. Defaults to true.
+
+Default value: lookup('epics::ioc::procserv_log_timestamp', Boolean)
+
+##### `procserv_log_timestampfmt`
+
+Data type: `Optional[String]`
+
+The timestamp format procServ uses when logging activity on the IOC shell.
+Defaults to undef (use procServ's default timestamp format).
+
+Note that procServ versions <2.8.0 are affected by a
+[bug](https://github.com/ralphlange/procServ/issues/18) which causes
+procServ's --logstamp command-line parameter to behave incorrectly when no
+format string is specified. Upgrade or specify `procserv_log_timestampfmt`
+along with `procserv_log_timestamp => true` to work around the problem.
+
+Default value: lookup('epics::ioc::procserv_log_timestampfmt', { 'value_type' => Optional[String], 'default_value' => undef })
+
 ##### `logrotate_compress`
 
 Data type: `Boolean`
@@ -628,6 +652,15 @@ If the log file for the procServ log reaches this size the IOC log will be
 rotated. Defaults to '10M'.
 
 Default value: lookup('epics::ioc::logrotate_size', String)
+
+##### `procserv_timefmt`
+
+Data type: `String`
+
+The time format used by procServ for printing its own messages. See the
+documentation of `strftime` for details. Defaults to '%c'.
+
+Default value: lookup('epics::ioc::procserv_timefmt', String)
 
 ##### `run_make`
 
