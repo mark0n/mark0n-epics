@@ -10,7 +10,7 @@ RequiresMountsFor=<%= @systemd_requires_mounts_for.join(' ') %>
 Environment="<%= key %>=<%= val %>"
 <% end -%>
 EnvironmentFile=-/etc/iocs/<%= @name -%>/config
-ExecStart=/usr/bin/procServ --foreground --quiet --chdir=<%= @absbootdir -%> --ignore=^C^D^] --coresize=<%= @coresize -%> --restrict --logfile=<%= @procserv_log_file -%> --name <%= @name -%><% if @enable_console_port %> --port <%= @console_port -%><% end %><% if @enable_unix_domain_socket %> --port unix:/run/<%= @unix_domain_socket -%><% end %> <%= @absstartscript %>
+ExecStart=/usr/bin/procServ --foreground --quiet --chdir=<%= @absbootdir -%> --ignore=^C^D^] --coresize=<%= @coresize -%> --restrict --logfile=<%= @procserv_log_file -%> --name <%= @name -%><% if @enable_console_port %> --port <%= @console_port -%><% end %><% if @enable_unix_domain_socket %> --port unix:/run/<%= @unix_domain_socket -%><% end %> --timefmt='<%= @procserv_timefmt.gsub('%', '%%') -%>'<% if @procserv_log_timestamp %> --logstamp<% if not @procserv_log_timestampfmt.nil? %>='<%= @procserv_log_timestampfmt.gsub('%', '%%') -%>'<% end %><% end %> <%= @absstartscript %>
 <% if @systemd_notify -%>
 Type=notify
 NotifyAccess=all

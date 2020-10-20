@@ -267,7 +267,7 @@ describe 'epics::ioc' do
             %r{
               ^ExecStart=/usr/bin/procServ\s+--foreground\s+--quiet\s+--chdir=/usr/local/lib/iocapps/testioc/iocBoot/ioc\${HOST_ARCH}\s+
               --ignore=\^C\^D\^\]\s+--coresize=2147483647\s+--restrict\s+--logfile=/var/log/softioc-testioc/procServ.log\s+
-              --name\s+testioc\s+--port\s+4051\s+--port\s+unix:/run/softioc-testioc/procServ.sock\s+
+              --name\s+testioc\s+--port\s+4051\s+--port\s+unix:/run/softioc-testioc/procServ.sock\s+--timefmt='%%c'\s+--logstamp\s+
               /usr/local/lib/iocapps/testioc/iocBoot/ioc\${HOST_ARCH}/st.cmd$
             }x,
           )
@@ -313,7 +313,7 @@ describe 'epics::ioc' do
               %r{
                 ^ExecStart=/usr/bin/procServ\s+--foreground\s+--quiet\s+--chdir=/arbitrary/path/iocBoot/ioc\${HOST_ARCH}\s+
                 --ignore=\^C\^D\^\]\s+--coresize=2147483647\s+--restrict\s+--logfile=/var/log/softioc-testioc/procServ.log\s+
-                --name\s+testioc\s+--port\s+4051\s+--port\s+unix:/run/softioc-testioc/procServ.sock\s+
+                --name\s+testioc\s+--port\s+4051\s+--port\s+unix:/run/softioc-testioc/procServ.sock\s+--timefmt='%%c'\s+--logstamp\s+
                 /arbitrary/path/iocBoot/ioc\${HOST_ARCH}/st.cmd$
               }x,
             )
@@ -349,6 +349,66 @@ describe 'epics::ioc' do
             is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
               %r{
                 ^NotifyAccess=all$
+              }x,
+            )
+          }
+        end
+
+        context 'with procserv_log_timestamp => false' do
+          let(:params) { { 'procserv_log_timestamp' => false } }
+
+          it {
+            # "ExecStart" line doesn't contain "--logstamp" argument
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^ExecStart=/usr/bin/procServ((?!--logstamp).)*$
+              }x,
+            )
+          }
+        end
+
+        context "with procserv_log_timestampfmt => 'foo'" do
+          let(:params) { { 'procserv_log_timestampfmt' => 'foo' } }
+
+          it {
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^ExecStart=/usr/bin/procServ\s+.*?--logstamp='foo'.*$
+              }x,
+            )
+          }
+        end
+        context "with procserv_log_timestampfmt => '%F %T'" do
+          let(:params) { { 'procserv_log_timestampfmt' => '%F %T' } }
+
+          it {
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^ExecStart=/usr/bin/procServ\s+.*?--logstamp='%%F\ %%T'.*$
+              }x,
+            )
+          }
+        end
+
+        context "with procserv_timefmt => 'foo'" do
+          let(:params) { { 'procserv_timefmt' => 'foo' } }
+
+          it {
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^ExecStart=/usr/bin/procServ\s+.*?--timefmt='foo'.*$
+              }x,
+            )
+          }
+        end
+        context "with procserv_timefmt => '%F %T'" do
+          let(:params) { { 'procserv_timefmt' => '%F %T' } }
+
+          it {
+            # Percent signs are replaced by double percent signs according to https://www.freedesktop.org/software/systemd/man/systemd.unit.html#Specifiers
+            is_expected.to create_systemd__unit_file("softioc-#{title}.service").with_content(
+              %r{
+                ^ExecStart=/usr/bin/procServ\s+.*?--timefmt='%%F\ %%T'.*$
               }x,
             )
           }

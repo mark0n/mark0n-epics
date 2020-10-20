@@ -244,6 +244,20 @@
 #   The log file that procServ uses to log activity on the IOC shell. Defaults
 #   to '/var/log/softioc-<ioc_name>/procServ.log'.
 #
+# @param procserv_log_timestamp
+#   Specifies whether procServ prefixes log messages with a timestamp when
+#   logging activity on the IOC shell. Defaults to true.
+#
+# @param procserv_log_timestampfmt
+#   The timestamp format procServ uses when logging activity on the IOC shell.
+#   Defaults to undef (use procServ's default timestamp format).
+#
+#   Note that procServ versions <2.8.0 are affected by a
+#   [bug](https://github.com/ralphlange/procServ/issues/18) which causes
+#   procServ's --logstamp command-line parameter to behave incorrectly when no
+#   format string is specified. Upgrade or specify `procserv_log_timestampfmt`
+#   along with `procserv_log_timestamp => true` to work around the problem.
+#
 # @param logrotate_compress
 #   Whether to compress the IOC's log files when rotating them. Defaults to
 #   true.
@@ -255,6 +269,10 @@
 # @param logrotate_size
 #   If the log file for the procServ log reaches this size the IOC log will be
 #   rotated. Defaults to '10M'.
+#
+# @param procserv_timefmt
+#   The time format used by procServ for printing its own messages. See the
+#   documentation of `strftime` for details. Defaults to '%c'.
 #
 # @param run_make
 #   Whether to compile the IOC when its source code changes. If set to true the
@@ -380,9 +398,12 @@ define epics::ioc(
   Optional[Stdlib::Host]               $log_server                  = lookup('epics::ioc::log_server', { 'value_type' => Optional[Stdlib::Host], 'default_value' => undef }),
   Optional[String]                     $ca_sec_file                 = undef,
   Stdlib::Absolutepath                 $procserv_log_file           = "/var/log/softioc-${name}/procServ.log",
+  Boolean                              $procserv_log_timestamp      = lookup('epics::ioc::procserv_log_timestamp', Boolean),
+  Optional[String]                     $procserv_log_timestampfmt   = lookup('epics::ioc::procserv_log_timestampfmt', { 'value_type' => Optional[String], 'default_value' => undef }),
   Boolean                              $logrotate_compress          = lookup('epics::ioc::logrotate_compress', Boolean),
   Integer                              $logrotate_rotate            = lookup('epics::ioc::logrotate_rotate', Integer),
   String                               $logrotate_size              = lookup('epics::ioc::logrotate_size', String),
+  String                               $procserv_timefmt            = lookup('epics::ioc::procserv_timefmt', String),
   Boolean                              $run_make                    = lookup('epics::ioc::run_make', Boolean),
   Boolean                              $run_make_after_pkg_update   = lookup('epics::ioc::run_make_after_pkg_update', Boolean),
   Optional[Integer]                    $uid                         = undef,

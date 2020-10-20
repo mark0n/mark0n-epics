@@ -29,6 +29,8 @@ epics::ioc::logrotate_size: 10M
 epics::ioc::run_make: true
 epics::ioc::run_make_after_pkg_update: true
 epics::ioc::manage_user: true
+epics::ioc::procserv_log_timestamp: true
+epics::ioc::procserv_timefmt: '%c'
 epics::ioc::systemd_after:
   - network.target
 epics::ioc::systemd_notify: false
