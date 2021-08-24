@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## Unreleased
+
+**Improved**
+- Removed calls to systemd::systemctl::daemon_reload as newer versions of puppet-systemd no longer have this class. See [the puppet-systemd README](https://github.com/voxpupuli/puppet-systemd/blob/master/README.md#daemon-reloads) for more information about this removal.
+- Changed dependency info to point to new voxpupuli URL of puppet-systemd as the old camptocamp repo no longer exists
+- Updated version requirements for puppet-systemd
+
 ## [v2.3.0](https://github.com/mark0n/mark0n-epics/tree/2.3.0) (2020-10-20)
 
 **Added**

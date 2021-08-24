@@ -291,7 +291,6 @@ describe 'epics::ioc' do
               'Class[Epics::Carepeater]',
               'Class[Epics::Ioc::Software]',
               "File[/var/log/softioc-#{title}]",
-              'Class[Systemd::Systemctl::Daemon_reload]',
             ],
           )
         }
