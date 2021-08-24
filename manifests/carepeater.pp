@@ -82,8 +82,6 @@ class epics::carepeater(
         content => template("${module_name}/caRepeater/systemd/10-params.conf"),
         notify  => Service['caRepeater'],
       }
-
-      Class['systemd::systemctl::daemon_reload'] -> Service['caRepeater']
     }
     'init', 'debian': {
       file { '/etc/init.d/caRepeater':

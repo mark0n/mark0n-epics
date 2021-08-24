@@ -21,8 +21,8 @@
       "version_requirement": ">= 0.1.0 < 1.0.0"
     },
     {
-      "name": "camptocamp-systemd",
-      "version_requirement": ">= 2.0.0 < 3.0.0"
+      "name": "puppet-systemd",
+      "version_requirement": ">= 3.1.0 < 4.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -48,7 +48,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 5.5.0 < 7.0.0"
+      "version_requirement": ">= 6.1.0 < 7.0.0"
     }
   ],
   "description": "Install EPICS Base, manage EPICS IOCs and Channel Access repeaters. This module can automatically build IOCs and run them as a daemon.",

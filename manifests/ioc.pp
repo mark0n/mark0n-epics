@@ -590,9 +590,6 @@ define epics::ioc(
     ],
     *          => $service_attr,
   }
-  if $::service_provider == 'systemd' {
-    Class['systemd::systemctl::daemon_reload'] -> Service["softioc-${name}"]
-  }
 
   if $run_make and $run_make_after_pkg_update {
     Package <| tag == 'epics_ioc_pkg' |> ~> Exec["build IOC ${name}"]
